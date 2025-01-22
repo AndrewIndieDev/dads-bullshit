@@ -430,6 +430,7 @@ public class PlayerPartyManager : MonoBehaviour
 
         LeaveLobby(false);
         SteamMatchmaking.JoinLobbyAsync(lobbyId);
+        SendJoinMessage(lobbyId);
     }
 
     // Called when somebody enters the lobby you're in
