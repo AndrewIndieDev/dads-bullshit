@@ -67,8 +67,7 @@ public class CreateRoom : MonoBehaviour
 
             NetworkManager.Singleton.OnClientStarted += () =>
             {
-                SceneLoader.Instance.LoadScene("MultiplayerGame", true);
-                SceneLoader.Instance.UnloadScene(gameObject.scene.name);
+                SceneLoader.Instance.LoadScene("MultiplayerGame", true, UnityEngine.SceneManagement.LoadSceneMode.Single);
             };
 
             NetworkManager.Singleton.StartHost();
