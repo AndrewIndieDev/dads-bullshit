@@ -696,8 +696,13 @@ public class PlayerPartyManager : MonoBehaviour
                 inviteQueue.RemoveAt(0);
                 closeCurrentInvite = false;
                 invitePanelRectTransform.gameObject.SetActive(true);
-                object[] args = new object[] { currentInvite.Item1.Name };
-                inviteTitleText.text = invitedText.Replace("{0}", currentInvite.Item1.Name);
+                //object[] args = new object[] { currentInvite.Item1.Name };
+                string invitedBy = currentInvite.Item1.Name;
+                if (invitedBy.Length > 12)
+                {
+                    invitedBy = invitedBy.Substring(0, 10) + "..";
+                }
+                inviteTitleText.text = invitedText.Replace("{0}", invitedBy);
                 float i = 0;
                 while (i < 1.0f)
                 {
