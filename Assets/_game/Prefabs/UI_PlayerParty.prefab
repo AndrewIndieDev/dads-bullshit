@@ -682,6 +682,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -48
       objectReference: {fileID: 0}
+    - target: {fileID: 3470646356457614147, guid: 8b5cddd62a4a18445b35c77e3230da17, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3641228120105633652, guid: 8b5cddd62a4a18445b35c77e3230da17, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -729,6 +733,22 @@ PrefabInstance:
     - target: {fileID: 3826812401413573782, guid: 8b5cddd62a4a18445b35c77e3230da17, type: 3}
       propertyPath: m_Name
       value: PartyPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 4147818841188730254, guid: 8b5cddd62a4a18445b35c77e3230da17, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4147818841188730254, guid: 8b5cddd62a4a18445b35c77e3230da17, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7457001477044474029}
+    - target: {fileID: 4147818841188730254, guid: 8b5cddd62a4a18445b35c77e3230da17, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnLeaveButtonPressed
+      objectReference: {fileID: 0}
+    - target: {fileID: 4147818841188730254, guid: 8b5cddd62a4a18445b35c77e3230da17, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PlayerPartyManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4238145107910516394, guid: 8b5cddd62a4a18445b35c77e3230da17, type: 3}
       propertyPath: m_AnchorMax.y

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using AndrewDowsett.SceneLoading;
 using Steamworks;
 using Unity.Collections;
 using Unity.Netcode;
@@ -127,8 +128,7 @@ public class PersistentClient : NetworkBehaviour
     [ClientRpc]
     void GoToSceneClientRPC(string sceneName)
     {
-        //LoadingScreen.sceneToLoad = sceneName;
-        //SceneManager.LoadScene("Loading");
+        SceneLoader.Instance.LoadScene(sceneName, true, LoadSceneMode.Single);
     }
 
     [ServerRpc(RequireOwnership = true)]
@@ -218,7 +218,7 @@ public class PersistentClient : NetworkBehaviour
     [ServerRpc(RequireOwnership = true)]
     public void SendGameDataToPlayerServerRPC(ulong playerID, RoomData roomData)
     {
-        SendGameDataToPlayerClientRPC(/*MenuController.Instance == null ? */SceneManager.GetActiveScene().name, roomData, new ClientRpcParams() { Send = new ClientRpcSendParams() { TargetClientIds = new[] { playerID } } });
+        SendGameDataToPlayerClientRPC(SceneManager.GetActiveScene().name, roomData, new ClientRpcParams() { Send = new ClientRpcSendParams() { TargetClientIds = new[] { playerID } } });
     }
 
     [ClientRpc]
@@ -227,8 +227,7 @@ public class PersistentClient : NetworkBehaviour
         CustomNetworkManager.Instance.roomData = roomData;
         if (!string.IsNullOrEmpty(map))
         {
-            //LoadingScreen.sceneToLoad = map;
-            //SceneManager.LoadScene("Loading");
+            SceneLoader.Instance.LoadScene(map, true, LoadSceneMode.Single);
         }
     }
     

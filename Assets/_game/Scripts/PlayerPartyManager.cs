@@ -8,6 +8,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
+using AndrewDowsett.SceneLoading;
+using UnityEngine.SceneManagement;
+using AndrewDowsett.Utility;
 
 [System.Serializable]
 public class AvatarImage
@@ -242,21 +245,13 @@ public class PlayerPartyManager : MonoBehaviour
                 string scene = messageParts[1];
                 if (string.IsNullOrEmpty(scene))
                 {
-                        //if (!MainMenu.Instance)
-                        //{
-                        //    NetworkManager.Singleton.Shutdown();
-                        //    SceneManager.LoadScene("Menu");
-                        //}
-                        NetworkManager.Singleton.Shutdown();
-                        //
+                    NetworkManager.Singleton.Shutdown();
+                    SceneLoader.Instance.LoadScene("MainMenu", true, LoadSceneMode.Single);
                 }
                 else
                 {
                     NetworkManager.Singleton.Shutdown();
-                    //if (MenuController.Instance)
-                    //    MenuController.Instance.GotoScene(scene);
-                    //else
-                    //    SceneManager.LoadScene(scene);
+                    SceneLoader.Instance.LoadScene(scene, true, LoadSceneMode.Single);
                 }
                 
                 break;
@@ -272,7 +267,7 @@ public class PlayerPartyManager : MonoBehaviour
                     if (kickedid == SteamClient.SteamId)
                     {
                         LeaveLobby();
-                        //PopupManager.Instance.ShowDialoguePanel(kickedTitleText, kickedContentText, EDialoguePanelType.OK);
+                        PopupManager.Instance.ShowDialoguePanel(kickedTitleText, kickedContentText, EDialoguePanelType.OK);
                     }
                 }
                 
@@ -307,7 +302,7 @@ public class PlayerPartyManager : MonoBehaviour
 
     void JoinLol(ulong id)
     {
-        //MenuController.Instance.GotoScene("MultiplayerRoom");
+        SceneLoader.Instance.LoadScene("MultiplayerGame", true, LoadSceneMode.Single);
         NetworkManager.Singleton.OnClientConnectedCallback -= JoinLol;
     }
     
@@ -330,7 +325,7 @@ public class PlayerPartyManager : MonoBehaviour
         if (steamId.IsValid)
         {
             NetworkManager.Singleton.GetComponent<SteamP2PRelayTransport>().serverId = steamId;
-            //MenuController.Instance.GotoScene("Connecting");
+            SceneLoader.Instance.LoadScene("Connecting");
             NetworkManager.Singleton.StartClient();
         }
     }
@@ -567,7 +562,7 @@ public class PlayerPartyManager : MonoBehaviour
     private void GotoProfilePage(SteamId steamid)
     {
         openedProfileId = steamid;
-        //MenuController.Instance.GotoScene("UserProfile");
+        SceneLoader.Instance.LoadScene("UserProfile");
     }
 
     private void KickPlayer(SteamId steamid)
