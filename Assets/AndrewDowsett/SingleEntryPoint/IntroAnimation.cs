@@ -13,6 +13,7 @@ namespace AndrewDowsett.SingleEntryPoint
             // await an animation, or Feel Feedbacks.
             introFeedbacks.PlayFeedbacks();
             await UniTask.WaitForSeconds(introFeedbacks.TotalDuration);
+            Destroy(gameObject);
         }
     }
 }

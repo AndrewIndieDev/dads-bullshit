@@ -38,8 +38,6 @@ namespace AndrewDowsett.SingleEntryPoint
         public PopupManager _popupManager;
         public DevMode _devMode;
 
-        public GameObject _background;
-
         private async void Start()
         {
             BindObjects();
@@ -77,7 +75,6 @@ namespace AndrewDowsett.SingleEntryPoint
             _steamManager = Instantiate(_steamManager);
             _playerPartyManager = Instantiate(_playerPartyManager);
             _popupManager = Instantiate(_popupManager);
-            _background = Instantiate(_background);
             _devMode = Instantiate(_devMode);
         }
 
@@ -159,8 +156,6 @@ namespace AndrewDowsett.SingleEntryPoint
             await UniTask.WaitUntil(() => !_sceneLoader.CurrentlyLoadingScene);
             loadingSceneDisposable.SetLoadingText("Finished Loading Scene...");
             loadingSceneDisposable.SetLoadingBarPercent(loadingSceneDisposable.GetLoadingBarPercent() + percentageToUse);
-
-            Destroy(_background);
             
             await UniTask.Delay(500);
         }
@@ -170,7 +165,6 @@ namespace AndrewDowsett.SingleEntryPoint
             Destroy(_camera.gameObject);
 
             // Wait for the intro animation
-            // Suggestion: Put a black background in the animation so the player can't see the scene's loading in.
             await _introAnimation.Play();
 
             // Unload the entry scene
