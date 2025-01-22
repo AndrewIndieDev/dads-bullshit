@@ -14,8 +14,9 @@ public class PartyPanel : UIBehaviour
     private RectTransform rectTransform;
     private bool open = false;
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         rectTransform = GetComponent<RectTransform>();
         rectTransform.sizeDelta = open ? openedSize : closedSize;
         contentContainer.SetActive(open);

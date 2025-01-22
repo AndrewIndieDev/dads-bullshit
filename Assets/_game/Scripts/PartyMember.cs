@@ -7,7 +7,7 @@ public class PartyMember : MonoBehaviour
 {
     public SteamId steamID;
 
-    private string name;
+    private new string name;
     public string Name
     {
         get => name;

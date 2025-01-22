@@ -80,6 +80,7 @@ public class PlayerPartyManager : MonoBehaviour
         SteamFriends.OnGameLobbyJoinRequested += OnGameLobbyJoinRequested;
         SteamFriends.OnGameRichPresenceJoinRequested += OnGameRichPresenceJoinRequested;
         SteamMatchmaking.OnChatMessage += OnChatMessageReceived;
+        NetworkManager.Singleton.OnServerStopped += OnServerStopped;
 
         if (SteamClient.IsValid)
         {
@@ -106,6 +107,11 @@ public class PlayerPartyManager : MonoBehaviour
         StartCoroutine(UpdateOwnershipStatus());
         StartCoroutine(UpdateOnlinePlayerList());
         StartCoroutine(ConnectToLaunchParameterLobbyIfNeeded());
+    }
+
+    private void OnServerStopped(bool obj)
+    {
+        SendDisconnectMessage();
     }
 
     internal void EnableAllInviteButtons()
@@ -182,41 +188,6 @@ public class PlayerPartyManager : MonoBehaviour
 
         switch (messageParts[0])
         {
-            case "CHARACTER":
-                {
-                    if (messageParts.Length < 4) break;
-                    if (!partyMembers.ContainsKey(friend.Id)) break;
-                    PartyMember member = partyMembers[friend.Id];
-
-                    if (!string.IsNullOrEmpty(member.characterTheme))
-                        break;
-
-                    member.characterTheme = messageParts[1];
-                    member.characterName = messageParts[2];
-                    member.characterStyle = messageParts[3];
-
-                    //if (MainMenu.Instance)
-                    //{
-                    //    MainMenu.Instance.SpawnPartyMember(member);
-                    //}
-
-                    break;
-                }
-
-            case "CHARACTERREFRESH":
-                {
-                    if (messageParts.Length < 4) break;
-                    if (!partyMembers.ContainsKey(friend.Id)) break;
-                    PartyMember member = partyMembers[friend.Id];
-                    member.characterTheme = messageParts[1];
-                    member.characterName = messageParts[2];
-                    member.characterStyle = messageParts[3];
-
-                    //if (MainMenu.Instance)
-                    //    MainMenu.Instance.UpdatePartyMember(member);
-                    break;
-                }
-
             case "JOIN":
                 {
                     if (messageParts.Length == 2)
@@ -320,8 +291,6 @@ public class PlayerPartyManager : MonoBehaviour
         {
             AddPartyMember(index.Id);
         }
-
-        SendCharacterMessage();
 
         uint ip = 0;
         ushort port = 0;
@@ -437,7 +406,6 @@ public class PlayerPartyManager : MonoBehaviour
     private void OnLobbyMemberJoined(Lobby lobby, Friend friend)
     {
         AddPartyMember(friend.Id);
-        SendCharacterMessage();
     }
 
     void Update()
@@ -625,14 +593,6 @@ public class PlayerPartyManager : MonoBehaviour
     public void OnLeaveButtonPressed()
     {
         LeaveLobby();
-    }
-
-    public void SendCharacterMessage(bool refresh = false)
-    {
-        //if (!refresh)
-        //    lobby.SendChatString($"CHARACTER|{SettingsManager.Settings.Customization.CharacterThemeName}|{SettingsManager.Settings.Customization.CharacterName}|{SettingsManager.Settings.Customization.CharacterStyle}");
-        //else
-        //    lobby.SendChatString($"CHARACTERREFRESH|{SettingsManager.Settings.Customization.CharacterThemeName}|{SettingsManager.Settings.Customization.CharacterName}|{SettingsManager.Settings.Customization.CharacterStyle}");
     }
 
     public void SendJoinMessage(string ip, int port, string password)
