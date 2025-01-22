@@ -232,6 +232,14 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1368301053534539508, guid: 52bc0a666625d2745867d90d9af85739, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7457001477044474029}
+    - target: {fileID: 1368301053534539508, guid: 52bc0a666625d2745867d90d9af85739, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: DenyInvitation
+      objectReference: {fileID: 0}
     - target: {fileID: 1377427385110053355, guid: 52bc0a666625d2745867d90d9af85739, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -255,6 +263,14 @@ PrefabInstance:
     - target: {fileID: 1552275274852812654, guid: 52bc0a666625d2745867d90d9af85739, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5097187306238764927, guid: 52bc0a666625d2745867d90d9af85739, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7457001477044474029}
+    - target: {fileID: 5097187306238764927, guid: 52bc0a666625d2745867d90d9af85739, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: AcceptInvitation
       objectReference: {fileID: 0}
     - target: {fileID: 5890788770504913487, guid: 52bc0a666625d2745867d90d9af85739, type: 3}
       propertyPath: m_AnchorMax.y
@@ -290,7 +306,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7381260408002320582, guid: 52bc0a666625d2745867d90d9af85739, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.45
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 7381260408002320582, guid: 52bc0a666625d2745867d90d9af85739, type: 3}
       propertyPath: m_AnchorMin.x
@@ -298,7 +314,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7381260408002320582, guid: 52bc0a666625d2745867d90d9af85739, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.45
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 7381260408002320582, guid: 52bc0a666625d2745867d90d9af85739, type: 3}
       propertyPath: m_SizeDelta.x
