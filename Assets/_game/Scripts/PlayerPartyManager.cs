@@ -325,7 +325,7 @@ public class PlayerPartyManager : MonoBehaviour
         if (steamId.IsValid)
         {
             NetworkManager.Singleton.GetComponent<SteamP2PRelayTransport>().serverId = steamId;
-            SceneLoader.Instance.LoadScene("Connecting");
+            SceneLoader.Instance.LoadScene("MultiplayerGame", true, LoadSceneMode.Single);
             NetworkManager.Singleton.StartClient();
         }
     }
