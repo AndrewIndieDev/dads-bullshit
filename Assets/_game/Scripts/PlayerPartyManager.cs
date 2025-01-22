@@ -80,6 +80,7 @@ public class PlayerPartyManager : MonoBehaviour
         SteamFriends.OnGameLobbyJoinRequested += OnGameLobbyJoinRequested;
         SteamFriends.OnGameRichPresenceJoinRequested += OnGameRichPresenceJoinRequested;
         SteamMatchmaking.OnChatMessage += OnChatMessageReceived;
+        NetworkManager.Singleton.OnServerStopped += OnServerStopped;
 
         if (SteamClient.IsValid)
         {
@@ -106,6 +107,11 @@ public class PlayerPartyManager : MonoBehaviour
         StartCoroutine(UpdateOwnershipStatus());
         StartCoroutine(UpdateOnlinePlayerList());
         StartCoroutine(ConnectToLaunchParameterLobbyIfNeeded());
+    }
+
+    private void OnServerStopped(bool obj)
+    {
+        SendDisconnectMessage();
     }
 
     internal void EnableAllInviteButtons()

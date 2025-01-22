@@ -28,6 +28,8 @@ namespace AndrewDowsett.Networking.Steam
             {
                 foreach (var lobby in lobbies)
                 {
+                    if (serverListParent == null)
+                        break;
                     GameObject lobbyItem = Instantiate(serverListItemTemplate, serverListParent.transform);
                     //lobbyItem.GetComponent<ServerListItem>().SetLobby(lobby);
                     lobbyItem.SetActive(true);
