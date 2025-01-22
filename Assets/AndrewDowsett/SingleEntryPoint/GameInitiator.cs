@@ -37,6 +37,7 @@ namespace AndrewDowsett.SingleEntryPoint
         public PlayerPartyManager _playerPartyManager;
         public PopupManager _popupManager;
         public DevMode _devMode;
+        public GameManager _gameManager;
 
         private async void Start()
         {
@@ -76,6 +77,7 @@ namespace AndrewDowsett.SingleEntryPoint
             _playerPartyManager = Instantiate(_playerPartyManager);
             _popupManager = Instantiate(_popupManager);
             _devMode = Instantiate(_devMode);
+            _gameManager = Instantiate(_gameManager);
         }
 
         private async UniTask InitializeSteamNetwork(DisposableShowEntryScreen loadingSceneDisposable, float percentageToUse)

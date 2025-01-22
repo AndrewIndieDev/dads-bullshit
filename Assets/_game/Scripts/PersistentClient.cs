@@ -3,32 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using AndrewDowsett.SceneLoading;
 using Steamworks;
-using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PersistentClient : NetworkBehaviour
 {
-    public static Dictionary<ulong, PersistentClient> persistentClients = new Dictionary<ulong, PersistentClient>();
-    public static PersistentClient localClient;
+    public static Dictionary<ulong, PersistentClient> AllClients = new Dictionary<ulong, PersistentClient>();
+    public static PersistentClient LocalClient;
     
-    public NetworkVariable<bool> ready = new(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    public NetworkVariable<float> score = new(0.0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    public NetworkVariable<int> lastPing = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    
-    public string steamName;
-    public NetworkVariable<ulong> steamID = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-    
-    //public PlayerController currentPlayerController;
-    
-    public bool allPlayersReady = false;
+    public NetworkVariable<bool> nv_Ready = new(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<int> nv_LastPing = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public NetworkVariable<ulong> nv_SteamID = new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<int> nv_CharacterIndex = new (0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     public Action<ulong, bool> onReadyChanged;
-    
-    public List<string> weaponOrder = new List<string>();
-    public int currentWeaponIndex = 0;
-    public NetworkVariable<FixedString64Bytes> currentWeaponID = new NetworkVariable<FixedString64Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public Action<ulong, int> onCharacterChanged;
+
+    [SerializeField] private string steamName;
+    [SerializeField] private bool allPlayersReady = false;
     
     private DateTime lastPingTime;
     
@@ -36,81 +29,75 @@ public class PersistentClient : NetworkBehaviour
     {
         DontDestroyOnLoad(gameObject);
         if (IsOwner)
-            steamID.Value = SteamClient.SteamId;
-        OnSteamIDChanged(0, steamID.Value);
+            nv_SteamID.Value = SteamClient.SteamId;
+        OnSteamIDChanged(0, nv_SteamID.Value);
         if (NetworkManager.IsHost)
         {
             StartCoroutine(UpdatePing());
-            ShuffleWeaponOrder();
         }
     }
-    
-    public void ShuffleWeaponOrder()
-    {
-        //weaponOrder = CustomNetworkManager.Instance.roomData.weapons.Split(",").ToList();
-        //if (weaponShuffleMode == EWeaponShuffleMode.Random) // TODO: Add weapon shuffle modes
-            //weaponOrder.Shuffle();
-        currentWeaponIndex = 0;
-        if (weaponOrder.Count > 0)
-            currentWeaponID.Value = weaponOrder[currentWeaponIndex];
-    }
 
-    IEnumerator UpdatePing()
+    private IEnumerator UpdatePing()
     {
         while (true)
         {
             PingServerRPC();
-            yield return new WaitForSeconds(5.0f);
+            yield return new WaitForSeconds(2.0f);
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    void PingServerRPC()
+    [Rpc(SendTo.Server, RequireOwnership = false)]
+    private void PingServerRPC()
     {
         lastPingTime = DateTime.UtcNow;
         PingClientRPC();
     }
 
-    [ClientRpc]
-    void PingClientRPC()
+    [Rpc(SendTo.ClientsAndHost)]
+    private void PingClientRPC()
     {
         if (IsOwner)
             PingFromClientServerRPC();
     }
 
-    [ServerRpc(RequireOwnership = true)]
-    void PingFromClientServerRPC(ServerRpcParams serverRpcParams = default)
+    [Rpc(SendTo.Server, RequireOwnership = true)]
+    private void PingFromClientServerRPC(RpcParams rpcParams = default)
     {
         DateTime time = DateTime.UtcNow;
-        persistentClients[serverRpcParams.Receive.SenderClientId].lastPing.Value = (int)(time - lastPingTime).TotalMilliseconds;
+        AllClients[rpcParams.Receive.SenderClientId].nv_LastPing.Value = (int)(time - lastPingTime).TotalMilliseconds;
     }
 
     public override void OnNetworkSpawn()
     {
-        steamID.OnValueChanged += OnSteamIDChanged;
-        ready.OnValueChanged += OnReadyChanged;
-        if (persistentClients.ContainsKey(OwnerClientId))
-            persistentClients.Remove(OwnerClientId);
-        persistentClients.Add(OwnerClientId, this);
+        nv_SteamID.OnValueChanged += OnSteamIDChanged;
+        nv_Ready.OnValueChanged += OnReadyChanged;
+        nv_CharacterIndex.OnValueChanged += OnCharacterChanged;
+        
+        if (AllClients.ContainsKey(OwnerClientId))
+            AllClients.Remove(OwnerClientId);
+        AllClients.Add(OwnerClientId, this);
+        
         if (IsOwner)
-            localClient = this;
+            LocalClient = this;
     }
 
     public override void OnNetworkDespawn()
     {
-        steamID.OnValueChanged -= OnSteamIDChanged;
-        ready.OnValueChanged -= OnReadyChanged;
-        if (persistentClients.ContainsKey(OwnerClientId))
-            persistentClients.Remove(OwnerClientId);
+        nv_SteamID.OnValueChanged -= OnSteamIDChanged;
+        nv_Ready.OnValueChanged -= OnReadyChanged;
+        nv_CharacterIndex.OnValueChanged -= OnCharacterChanged;
+        
+        if (AllClients.ContainsKey(OwnerClientId))
+            AllClients.Remove(OwnerClientId);
     }
 
-    void OnSteamIDChanged(ulong previous, ulong current)
+    private void OnSteamIDChanged(ulong previous, ulong current)
     {
         steamName = new Friend(current).Name;
         gameObject.name = "Persistent Client: " + steamName;
     }
 
-    void OnReadyChanged(bool previous, bool current)
+    private void OnReadyChanged(bool previous, bool current)
     {
         onReadyChanged?.Invoke(OwnerClientId, current);
         if (IsHost && current && GameManager.Instance != null)
@@ -119,24 +106,29 @@ public class PersistentClient : NetworkBehaviour
         }
     }
 
+    private void OnCharacterChanged(int previousValue, int newValue)
+    {
+        onCharacterChanged?.Invoke(OwnerClientId, newValue);
+    }
+
     public void GoToScene(string sceneName)
     {
         if (!IsHost) return;
         GoToSceneClientRPC(sceneName);
     }
 
-    [ClientRpc]
-    void GoToSceneClientRPC(string sceneName)
+    [Rpc(SendTo.ClientsAndHost)]
+    private void GoToSceneClientRPC(string sceneName)
     {
         SceneLoader.Instance.LoadScene(sceneName, true, LoadSceneMode.Single);
     }
 
-    [ServerRpc(RequireOwnership = true)]
-    public void SetReadyStatusServerRPC(bool status, ServerRpcParams serverRpcParams = default)
+    [Rpc(SendTo.Server, RequireOwnership = true)]
+    public void SetReadyStatusServerRPC(bool status, RpcParams rpcParams = default)
     {
-        ulong clientID = serverRpcParams.Receive.SenderClientId;
-        if (persistentClients.TryGetValue(clientID, out var client))
-            client.ready.Value = status;
+        ulong clientID = rpcParams.Receive.SenderClientId;
+        if (AllClients.TryGetValue(clientID, out var client))
+            client.nv_Ready.Value = status;
     }
 
     public void NewGameStarted()
@@ -144,22 +136,22 @@ public class PersistentClient : NetworkBehaviour
         if (IsHost)
         {
             allPlayersReady = false;
-            foreach (var player in persistentClients)
+            foreach (var player in AllClients)
             {
-                player.Value.ready.OnValueChanged += OnPlayerReadyStatusChanged;
+                player.Value.nv_Ready.OnValueChanged += OnPlayerReadyStatusChanged;
             }
 
             OnPlayerReadyStatusChanged(false, false);
         }
     }
-    
-    void OnPlayerReadyStatusChanged(bool oldValue, bool newValue)
+
+    private void OnPlayerReadyStatusChanged(bool oldValue, bool newValue)
     {
         if (IsHost)
         {
-            foreach (var player in persistentClients)
+            foreach (var player in AllClients)
             {
-                if (player.Value.ready.Value == false)
+                if (player.Value.nv_Ready.Value == false)
                 {
                     return;
                 }
@@ -167,7 +159,7 @@ public class PersistentClient : NetworkBehaviour
 
             allPlayersReady = true;
             
-            foreach (var player in persistentClients)
+            foreach (var player in AllClients)
             {
                 if (GameManager.Instance != null) 
                     GameManager.Instance.SpawnPlayer(player.Value);
@@ -175,47 +167,7 @@ public class PersistentClient : NetworkBehaviour
         }
     }
 
-    //[ServerRpc(RequireOwnership = true)]
-    //public void SpawnLaunchableServerRPC(ELaunchableType type, Vector3 position, Vector3 direction, string weaponID, ServerRpcParams parameters = default)
-    //{
-        //GameObject launchable = Instantiate(GameManager.Instance.launchables[(int)type], position, Quaternion.identity);
-        //LaunchableBase throwable = launchable.GetComponent<LaunchableBase>();
-        //throwable.Initialize(parameters.Receive.SenderClientId, direction, weaponID);
-        //NetworkObject networkObject = launchable.GetComponent<NetworkObject>();
-        //networkObject.SpawnWithOwnership(parameters.Receive.SenderClientId);
-    //}
-
-    //[ServerRpc(RequireOwnership = true)]
-    //public void SpawnSpawnableServerRPC(ESpawnableType type, Vector3 position, Vector3 rotation, byte[] extraData, ServerRpcParams parameters = default)
-    //{
-    //    SpawnSpawnableClientRPC(type, position, rotation, extraData, parameters.Receive.SenderClientId);
-    //}
-
-    //[ClientRpc]
-    //public void SpawnSpawnableClientRPC(ESpawnableType type, Vector3 position, Vector3 rotation, byte[] extraData, ulong clientID)
-    //{
-    //    if (NetworkManager.LocalClientId == clientID) return;
-    //    switch (type)
-    //    {
-    //        default:
-    //            //Instantiate(GameManager.Instance.spawnables[(int)type], position, Quaternion.Euler(rotation));
-    //            break;
-    //        case ESpawnableType.BounceLaser:
-    //            //GameObject newBounceLaser = Instantiate(GameManager.Instance.spawnables[(int)type], position, Quaternion.Euler(rotation));
-    //            //float[] positions = extraData.ToFloatArray();
-    //            //if (positions.Length == 9)
-    //            //    newBounceLaser.GetComponent<BounceLaser>().Initialize(new Vector3(positions[0], positions[1], positions[2]), new Vector3(positions[3], positions[4], positions[5]), new Vector3(positions[6], positions[7], positions[8]));
-    //            break;
-    //    }
-    //}
-    
-    public IEnumerator SpawnDelay(ulong playerID)
-    {
-        yield return new WaitForSeconds(3.0f);
-        GameManager.Instance.SpawnPlayer(persistentClients[playerID]);
-    }
-
-    [ServerRpc(RequireOwnership = true)]
+    [Rpc(SendTo.Server, RequireOwnership = true)]
     public void SendGameDataToPlayerServerRPC(ulong playerID, RoomData roomData)
     {
         SendGameDataToPlayerClientRPC(SceneManager.GetActiveScene().name, roomData, new ClientRpcParams() { Send = new ClientRpcSendParams() { TargetClientIds = new[] { playerID } } });
@@ -229,17 +181,5 @@ public class PersistentClient : NetworkBehaviour
         {
             SceneLoader.Instance.LoadScene(map, true, LoadSceneMode.Single);
         }
-    }
-    
-    [ClientRpc]
-    public void ShowWinningSequenceClientRPC(ulong[] winnerIDs, ulong lastDeathID)
-    {
-        //GameManager.Instance?.ShowWinningSequence(winnerIDs, lastDeathID);
-    }
-    
-    [ClientRpc]
-    public void StartSuspenseMusicClientRPC()
-    {
-        //GameManager.Instance?.scoreboard?.StartSuspenseMusic();
     }
 }
