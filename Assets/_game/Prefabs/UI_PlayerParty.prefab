@@ -438,6 +438,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 622672171953337651, guid: 8b5cddd62a4a18445b35c77e3230da17, type: 3}
+      propertyPath: crownImage
+      value: 
+      objectReference: {fileID: 3939507314019246067}
     - target: {fileID: 731284669386486633, guid: 8b5cddd62a4a18445b35c77e3230da17, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -684,7 +688,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3470646356457614147, guid: 8b5cddd62a4a18445b35c77e3230da17, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3641228120105633652, guid: 8b5cddd62a4a18445b35c77e3230da17, type: 3}
       propertyPath: m_AnchorMax.y
@@ -828,6 +832,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5037214835120409754, guid: 8b5cddd62a4a18445b35c77e3230da17, type: 3}
       propertyPath: m_Value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138484276487328935, guid: 8b5cddd62a4a18445b35c77e3230da17, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5236159561521742916, guid: 8b5cddd62a4a18445b35c77e3230da17, type: 3}
@@ -999,6 +1007,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3939507314019246067 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5138484276487328935, guid: 8b5cddd62a4a18445b35c77e3230da17, type: 3}
+  m_PrefabInstance: {fileID: 8206791343748320084}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4223520756258371204 stripped
