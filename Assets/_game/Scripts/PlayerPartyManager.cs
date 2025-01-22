@@ -177,102 +177,107 @@ public class PlayerPartyManager : MonoBehaviour
     {
         if (friend.Id == SteamClient.SteamId) return;
 
+        Debug.Log("Debug: " + message);
         string[] messageParts = message.Split('|');
 
         switch (messageParts[0])
         {
             case "CHARACTER":
-            {
-                if (messageParts.Length < 4) break;
-                if (!partyMembers.ContainsKey(friend.Id)) break;
-                PartyMember member = partyMembers[friend.Id];
+                {
+                    if (messageParts.Length < 4) break;
+                    if (!partyMembers.ContainsKey(friend.Id)) break;
+                    PartyMember member = partyMembers[friend.Id];
 
-                if (!string.IsNullOrEmpty(member.characterTheme))
+                    if (!string.IsNullOrEmpty(member.characterTheme))
+                        break;
+
+                    member.characterTheme = messageParts[1];
+                    member.characterName = messageParts[2];
+                    member.characterStyle = messageParts[3];
+
+                    //if (MainMenu.Instance)
+                    //{
+                    //    MainMenu.Instance.SpawnPartyMember(member);
+                    //}
+
                     break;
-
-                member.characterTheme = messageParts[1];
-                member.characterName = messageParts[2];
-                member.characterStyle = messageParts[3];
-
-                //if (MainMenu.Instance)
-                //{
-                //    MainMenu.Instance.SpawnPartyMember(member);
-                //}
-
-                break;
-            }
+                }
 
             case "CHARACTERREFRESH":
-            {
-                if (messageParts.Length < 4) break;
-                if (!partyMembers.ContainsKey(friend.Id)) break;
-                PartyMember member = partyMembers[friend.Id];
-                member.characterTheme = messageParts[1];
-                member.characterName = messageParts[2];
-                member.characterStyle = messageParts[3];
+                {
+                    if (messageParts.Length < 4) break;
+                    if (!partyMembers.ContainsKey(friend.Id)) break;
+                    PartyMember member = partyMembers[friend.Id];
+                    member.characterTheme = messageParts[1];
+                    member.characterName = messageParts[2];
+                    member.characterStyle = messageParts[3];
 
-                //if (MainMenu.Instance)
-                //    MainMenu.Instance.UpdatePartyMember(member);
-                break;
-            }
+                    //if (MainMenu.Instance)
+                    //    MainMenu.Instance.UpdatePartyMember(member);
+                    break;
+                }
 
             case "JOIN":
-            {
-                if (messageParts.Length >= 4)
                 {
-                    string ip = messageParts[1];
-                    int port = int.Parse(messageParts[2]);
-                    string password = messageParts.Length > 3 ? messageParts[3] : "";
-
-                    //if (ClientManager.Client.ConnectionState != DarkRift.ConnectionState.Connected)
-                    //    ClientManager.Instance.JoinServer(ip, port, password);
-                    //ClientManager.Client.ConnectInBackground(IPAddress.Parse(ip == ClientManager.Instance.publicIP ? "127.0.0.1" : ip), port, password, ClientManager.Client.IPVersion);
+                    if (messageParts.Length == 2)
+                    {
+                        if (NetworkManager.Singleton.IsConnectedClient)
+                        {
+                            SceneLoader.Instance.LoadScene("MainMenu", true, LoadSceneMode.Single);
+                            NetworkManager.Singleton.Shutdown();
+                            NetworkManager.Singleton.OnClientStopped += (bool x) =>
+                            {
+                                ulong lobbyID = ulong.Parse(messageParts[1]);
+                                NetworkManager.Singleton.GetComponent<SteamP2PRelayTransport>().serverId = lobbyID;
+                                NetworkManager.Singleton.StartClient();
+                                NetworkManager.Singleton.OnClientConnectedCallback += JoinGameOnceConnected;
+                            };
+                        }
+                        else
+                        {
+                            ulong lobbyID = ulong.Parse(messageParts[1]);
+                            NetworkManager.Singleton.GetComponent<SteamP2PRelayTransport>().serverId = lobbyID;
+                            NetworkManager.Singleton.StartClient();
+                            NetworkManager.Singleton.OnClientConnectedCallback += JoinGameOnceConnected;
+                        }
+                    }
+                    break;
                 }
-                else if (messageParts.Length == 2)
-                {
-                    ulong lobbyID = ulong.Parse(messageParts[1]);
-                    NetworkManager.Singleton.GetComponent<SteamP2PRelayTransport>().serverId = lobbyID;
-                    //MenuController.Instance.GotoScene("Connecting");
-                    NetworkManager.Singleton.StartClient();
-                    NetworkManager.Singleton.OnClientConnectedCallback += JoinLol;
-                }
-                break;
-            }
 
             case "DISCONNECT":
-            {
-                if (messageParts.Length < 2) break;
-                string scene = messageParts[1];
-                if (string.IsNullOrEmpty(scene))
                 {
-                    NetworkManager.Singleton.Shutdown();
-                    SceneLoader.Instance.LoadScene("MainMenu", true, LoadSceneMode.Single);
-                }
-                else
-                {
-                    NetworkManager.Singleton.Shutdown();
-                    SceneLoader.Instance.LoadScene(scene, true, LoadSceneMode.Single);
-                }
+                    if (messageParts.Length < 2) break;
+                    string scene = messageParts[1];
+                    if (string.IsNullOrEmpty(scene))
+                    {
+                        NetworkManager.Singleton.Shutdown();
+                        SceneLoader.Instance.LoadScene("MainMenu", true, LoadSceneMode.Single);
+                    }
+                    else
+                    {
+                        NetworkManager.Singleton.Shutdown();
+                        SceneLoader.Instance.LoadScene(scene, true, LoadSceneMode.Single);
+                    }
                 
-                break;
-            }
+                    break;
+                }
 
             case "KICK":
-            {
-                if (messageParts.Length < 2) break;
-                if (!lobby.IsOwnedBy(friend.Id)) break;
-
-                if (ulong.TryParse(messageParts[1], out ulong kickedid))
                 {
-                    if (kickedid == SteamClient.SteamId)
+                    if (messageParts.Length < 2) break;
+                    if (!lobby.IsOwnedBy(friend.Id)) break;
+
+                    if (ulong.TryParse(messageParts[1], out ulong kickedid))
                     {
-                        LeaveLobby();
-                        PopupManager.Instance.ShowDialoguePanel(kickedTitleText, kickedContentText, EDialoguePanelType.OK);
+                        if (kickedid == SteamClient.SteamId)
+                        {
+                            LeaveLobby();
+                            PopupManager.Instance.ShowDialoguePanel(kickedTitleText, kickedContentText, EDialoguePanelType.OK);
+                        }
                     }
-                }
                 
-                break;
-            }
+                    break;
+                }
 
             default:
                 break;
@@ -300,10 +305,10 @@ public class PlayerPartyManager : MonoBehaviour
         Player.crownImage.enabled = amIOwner;
     }
 
-    void JoinLol(ulong id)
+    void JoinGameOnceConnected(ulong id)
     {
         SceneLoader.Instance.LoadScene("MultiplayerGame", true, LoadSceneMode.Single);
-        NetworkManager.Singleton.OnClientConnectedCallback -= JoinLol;
+        NetworkManager.Singleton.OnClientConnectedCallback -= JoinGameOnceConnected;
     }
     
     // Called when you enter a lobby.

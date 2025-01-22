@@ -75,7 +75,7 @@ MonoBehaviour:
     NetworkProfilingMetrics: 0
     OldPrefabList: []
   RunInBackground: 1
-  LogLevel: 1
+  LogLevel: 3
   customNetworkManagerPrefab: {fileID: 0}
   roomData:
     name: 
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serverId: 0
-  debug: 1
+  debug: 0
 --- !u!114 &-4263645985495322805
 MonoBehaviour:
   m_ObjectHideFlags: 0
