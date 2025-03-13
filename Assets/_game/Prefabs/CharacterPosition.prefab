@@ -171,8 +171,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2882192909200048057}
   - component: {fileID: 2133109143235272476}
+  - component: {fileID: 2160201795721555462}
   m_Layer: 0
-  m_Name: Character
+  m_Name: CharacterPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -207,7 +208,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a80543594e6e254da8b1ef94c69ffe8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _characterVisuals: []
   _camera: {fileID: 4632874691546137903}
+  _bountToUI: {fileID: 2160201795721555462}
+  _playerColor: {r: 1, g: 1, b: 1, a: 0.39215687}
+--- !u!114 &2160201795721555462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4905086239060387116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bea1ef176d317146afbfffea7565a3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6147664488910745143
 GameObject:
   m_ObjectHideFlags: 0
@@ -225,7 +241,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6951222670227115368
 Transform:
   m_ObjectHideFlags: 0

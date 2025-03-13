@@ -13,6 +13,7 @@ namespace AndrewDowsett.ObjectUIBinding
         [SerializeField] private float maxDistance = 500f;
         [SerializeField] private RectTransform rectTransform;
         [SerializeField] private Vector2 offset;
+        [SerializeField] private Color imageColor;
 
         private ObjectBoundToUI boundTo;
         private Camera mainCam;
@@ -32,11 +33,16 @@ namespace AndrewDowsett.ObjectUIBinding
             UpdateManager.UnregisterObserver(this);
         }
 
+        public void SetColor(Color color)
+        {
+            imageColor = color;
+        }
+
         public void ObservedUpdate(float deltaTime)
         {
             foreach (Image image in images)
             {
-                image.color = new Color(image.color.r, image.color.g, image.color.b, Mathf.Clamp(1.2f - (Vector2.Distance(Input.mousePosition, transform.position) / maxDistance), 0.3f, 1f));
+                image.color = new Color(imageColor.r, imageColor.g, imageColor.b, Mathf.Clamp(1.2f - (Vector2.Distance(Input.mousePosition, transform.position) / maxDistance), 0.3f, 0.6f));
             }
 
             if (boundTo != null && mainCam != null)

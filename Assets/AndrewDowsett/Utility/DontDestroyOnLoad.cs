@@ -6,4 +6,9 @@ public class DontDestroyOnLoad : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
     }
+
+    private void OnDestroy()
+    {
+        Debug.Log($"{gameObject.name} has been destroyed!");
+    }
 }

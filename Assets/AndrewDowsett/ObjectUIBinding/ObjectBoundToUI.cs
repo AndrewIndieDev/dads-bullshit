@@ -7,7 +7,7 @@ namespace AndrewDowsett.ObjectUIBinding
     {
         private UIBoundToObject boundUI;
 
-        private void OnEnable()
+        public void Show(Color color = default)
         {
             boundUI = ObjectPool.Pools["UIBoundToObject"].Get() as UIBoundToObject;
             if (boundUI == null)
@@ -15,7 +15,14 @@ namespace AndrewDowsett.ObjectUIBinding
                 Debug.Log($"Couldn't get object {typeof(UIBoundToObject).ToString()} from UIBoundToObject for {gameObject.name}.");
                 return;
             }
+            boundUI.SetColor(color);
             boundUI.Bind(this);
+        }
+
+        public void Hide()
+        {
+            if (boundUI != null)
+                boundUI.Despawn();
         }
 
         private void OnDisable()

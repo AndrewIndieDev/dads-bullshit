@@ -38,6 +38,7 @@ namespace AndrewDowsett.SingleEntryPoint
         public PopupManager _popupManager;
         public DevMode _devMode;
         public GameManager _gameManager;
+        public RPCManager _rpcManager;
 
         private async void Start()
         {
@@ -78,6 +79,7 @@ namespace AndrewDowsett.SingleEntryPoint
             _popupManager = Instantiate(_popupManager);
             _devMode = Instantiate(_devMode);
             _gameManager = Instantiate(_gameManager);
+            _rpcManager = Instantiate(_rpcManager);
         }
 
         private async UniTask InitializeSteamNetwork(DisposableShowEntryScreen loadingSceneDisposable, float percentageToUse)
@@ -164,8 +166,6 @@ namespace AndrewDowsett.SingleEntryPoint
 
         private async UniTask BeginGame()
         {
-            Destroy(_camera.gameObject);
-
             // Wait for the intro animation
             await _introAnimation.Play();
 

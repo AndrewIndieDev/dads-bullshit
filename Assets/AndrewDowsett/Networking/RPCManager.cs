@@ -9,7 +9,6 @@ namespace AndrewDowsett.Networking
         private void Awake()
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
 
         #region ServerRPCs
@@ -17,6 +16,18 @@ namespace AndrewDowsett.Networking
         public void PingServerRPC()
         {
             PingClientRPC();
+        }
+
+        [Rpc(SendTo.Server, RequireOwnership = true)]
+        public void TrySetSeatColorServerRPC(ulong clientId, int index)
+        {
+            Character character = CharacterManager.Instance.Characters[index];
+            if (!character || character.IsAssigned)
+                return;
+
+            PersistentClient client = PersistentClient.AllClients[clientId];
+            CharacterManager.Instance.SetCharacter(index, client);
+            client.SetPlayerSeatIndex(index);
         }
         #endregion
 

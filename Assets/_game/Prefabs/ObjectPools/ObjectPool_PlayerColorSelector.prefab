@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3943904088327932454
+--- !u!1 &4275918702631610121
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,23 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8793439134644233012}
-  - component: {fileID: 5499815796263852165}
-  - component: {fileID: 8095784406702062803}
+  - component: {fileID: 567819755249382767}
+  - component: {fileID: 1957147393423238508}
+  - component: {fileID: 8309523472781205809}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: ObjectPool_PlayerColorSelector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8793439134644233012
+--- !u!4 &567819755249382767
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3943904088327932454}
+  m_GameObject: {fileID: 4275918702631610121}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -33,26 +33,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5499815796263852165
+--- !u!114 &1957147393423238508
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3943904088327932454}
+  m_GameObject: {fileID: 4275918702631610121}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2383d608ce9a41b498c54182fa1003ad, type: 3}
+  m_Script: {fileID: 11500000, guid: 8608b0e558f393f48a38ba7bbd87c8d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characters: []
---- !u!114 &8095784406702062803
+  customPoolName: UIBoundToObject
+  poolPrefab: {fileID: 670292930583705025, guid: 1025d677abadc2445961b59962ad3274, type: 3}
+  defaultPoolSize: 8
+  maxPoolSize: 8
+  needsCanvas: 1
+  canvas: {fileID: 4385783739658514716, guid: 4257782023a4caa4ba65e42eb98f04b4, type: 3}
+--- !u!114 &8309523472781205809
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3943904088327932454}
+  m_GameObject: {fileID: 4275918702631610121}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6bf223268f545c5469650faeded6f007, type: 3}
