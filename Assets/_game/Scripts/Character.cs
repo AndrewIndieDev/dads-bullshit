@@ -8,7 +8,7 @@ public class Character : MonoBehaviour
 {
     [SerializeField] private List<GameObject> _characterVisuals;
     [SerializeField] private CinemachineCamera _camera;
-    [SerializeField] private ObjectBoundToUI _bountToUI;
+    [SerializeField] private ObjectBoundToUI _boundToUI;
     [SerializeField] private Color _playerColor;
 
     public bool IsAssigned => _client != null;
@@ -17,7 +17,7 @@ public class Character : MonoBehaviour
 
     private void Start()
     {
-        _bountToUI.Show(_playerColor);
+        _boundToUI.Show(_playerColor);
     }
 
     public void SetClient(PersistentClient client)
@@ -30,7 +30,7 @@ public class Character : MonoBehaviour
             SetAsMainCamera();
         }
 
-        _bountToUI.Hide();
+        _boundToUI.Hide();
     }
 
     public void SetAsMainCamera()
@@ -47,6 +47,6 @@ public class Character : MonoBehaviour
     {
         ResetCamera();
         _client = null;
-        _bountToUI.Show(_playerColor);
+        _boundToUI.Show(_playerColor);
     }
 }

@@ -210,7 +210,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _characterVisuals: []
   _camera: {fileID: 4632874691546137903}
-  _bountToUI: {fileID: 2160201795721555462}
+  _boundToUI: {fileID: 2160201795721555462}
   _playerColor: {r: 1, g: 1, b: 1, a: 0.39215687}
 --- !u!114 &2160201795721555462
 MonoBehaviour:

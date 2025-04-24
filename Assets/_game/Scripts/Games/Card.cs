@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public enum ECardType
 {
     ONE = 1,
